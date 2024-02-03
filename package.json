@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@types/lodash": "^4.14.202",
     "apicache": "^1.6.3",
     "body-parser": "^1.20.2",
     "compression": "^1.7.4",
@@ -7,6 +8,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
+    "lodash": "^4.17.21",
     "mongoose": "^8.1.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",

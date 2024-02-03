@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { getUserByEmail, createUser, getUserById } from 'db/users';
-import { authentication, random } from 'helpers';
+import { getUserByEmail, createUser } from '../db/users';
+import { authentication, random, secret } from '../helpers';
 
 export const login = async (req: express.Request, res: express.Response) => {
     try {
@@ -11,16 +11,16 @@ export const login = async (req: express.Request, res: express.Response) => {
             return res.sendStatus(400);
         }
 
-        const user = await getUserByEmail(email);
+        const user = await getUserByEmail(email).select('+authentication.salt +authentication.password');
 
-        if (!user) {
-            return res.sendStatus(403);
+        if (!user || !user.authentication) {
+            return res.sendStatus(400);
         }
 
         const expectedHash = authentication(user.authentication.salt, password);
 
-        if (user.authentication.salt != password) {
-            return res.sendStatus(400);
+        if (user.authentication.password != expectedHash) {
+            return res.sendStatus(403);
         }
 
         const salt = random();
@@ -28,14 +28,14 @@ export const login = async (req: express.Request, res: express.Response) => {
 
         await user.save();
 
-        res.cookie('RAVERY90-AUTH', user.authentication.sessionToken, { domain: 'localhost', path: '/' });
+        res.cookie(secret(), user.authentication.sessionToken, { domain: 'localhost', path: '/' });
 
         return res.status(200).json(user).end();
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
         return res.sendStatus(400);
     }
-}
+};
 
 export const register = async (req: express.Request, res: express.Response) => {
     try {
@@ -53,17 +53,17 @@ export const register = async (req: express.Request, res: express.Response) => {
 
         const salt = random();
         const user = await createUser({
-            username,
             email,
+            username,
             authentication: {
                 salt,
-                password: authentication(salt, password)
-            }
+                password: authentication(salt, password),
+            },
         });
 
         return res.status(200).json(user).end();
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
         return res.sendStatus(400);
     }
 }
