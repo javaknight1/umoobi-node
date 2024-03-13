@@ -17,11 +17,9 @@ const db = mongoose.connection
 db.on('error', (error) => console.error(error))
 db.once('open', () => console.log('Connected to Database'))
 
-app.use('/', routes());
+app.use(cors());
 
-app.use(cors({
-    credentials: true
-}));
+app.use('/', routes());
 
 app.use(compression());
 app.use(cookieParser());

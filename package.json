@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@types/lodash": "^4.14.202",
     "apicache": "^1.6.3",
     "body-parser": "^1.20.2",
     "compression": "^1.7.4",
@@ -18,6 +17,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
+    "@types/lodash": "^4.14.202",
     "@types/body-parser": "^1.19.5",
     "@types/compression": "^1.7.5",
     "@types/cookie-parser": "^1.4.6",
