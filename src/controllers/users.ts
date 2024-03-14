@@ -31,6 +31,11 @@ export const getAllUsers = async (req: express.Request, res: express.Response) =
 export const updateUser = async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
+        const owner = req.body.user.id;
+
+        if (id !== owner) {
+            return errResponse(res, 403, "NOT_OWNER", "User is not the owner.");
+        }
 
         await updateUserById(id, req.body);
         
@@ -44,6 +49,11 @@ export const updateUser = async (req: express.Request, res: express.Response) =>
 export const deleteUser = async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
+        const owner = req.body.user.id;
+
+        if (id !== owner) {
+            return errResponse(res, 403, "NOT_OWNER", "User is not the owner.");
+        }
 
         await deleteUserById(id);
 
