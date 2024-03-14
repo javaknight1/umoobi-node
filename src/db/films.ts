@@ -20,3 +20,4 @@ export const getFilmsByOwner = (owner: string) => FilmModel.find({ owner }).exec
 export const createFilm = (values: Record<string, any>) => new FilmModel(values).save().then((film) => film.toObject());
 export const deleteFilmById = (id: string) => FilmModel.findOneAndDelete({ _id: id });
 export const updateFilmById = (id: string, values: Record<string, any>) => FilmModel.findByIdAndUpdate(id, values);
+export const searchFilmsByTitle = (search: string) => FilmModel.find({ title: { $regex: search, $options: 'i' } });

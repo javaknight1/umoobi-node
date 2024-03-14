@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { createFilm, deleteFilmById, getFilmById, getFilms, updateFilmById } from '../db/films';
+import { createFilm, deleteFilmById, getFilmById, getFilms, searchFilmsByTitle, updateFilmById } from '../db/films';
 import { errResponse } from '../helpers';
 
 export const getAllFilms = async (req: express.Request, res: express.Response) => {
@@ -102,6 +102,23 @@ export const deleteFilm = async (req: express.Request, res: express.Response) =>
         await deleteFilmById(id);
 
         return res.status(200).json("Successfully deleted film!").end();
+    } catch (error) {
+        console.log(error);
+        return errResponse(res, 400, "CODE_ERROR", "Found message in code.");
+    }
+};
+
+export const searchFilms = async (req: express.Request, res: express.Response) => {
+    try {
+        const { search } = req.query;
+
+        if (!search) {
+            return errResponse(res, 400, "MISSING_FIELDS", "Search field is missing.");
+        }
+
+        const films = await searchFilmsByTitle(search.toString());
+
+        return res.status(200).json(films).end();
     } catch (error) {
         console.log(error);
         return errResponse(res, 400, "CODE_ERROR", "Found message in code.");
