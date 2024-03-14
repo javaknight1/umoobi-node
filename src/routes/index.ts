@@ -1,6 +1,6 @@
 import express from 'express';
 
-import authentication from './authentication';
+import authentication from './auth';
 import users from './users';
 import films from './films';
 

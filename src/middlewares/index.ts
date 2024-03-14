@@ -2,11 +2,10 @@ import express from 'express';
 import { merge, get } from 'lodash';
 
 import { getUserBySessionToken } from '../db/users';
-import { secret } from '../helpers';
 
 export const isAuthenticated = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
-        const sessionToken = req.cookies[secret()];
+        const sessionToken = req.cookies["access_token"];
 
         if (!sessionToken) {
             return res.sendStatus(403);
