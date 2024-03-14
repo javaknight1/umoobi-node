@@ -1,8 +1,11 @@
-import crypto from 'crypto';
+import bcrypt from "bcryptjs";
 
 const SECRET = 'RAVERY90-REST-API';
 
-export const authentication = (salt: string, password: string): string => {
-    return crypto.createHmac('sha256', [salt, password].join('/')).update(SECRET).digest('hex');
+export const saltPassword = (password: string): string => {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 }
-export const random = () => crypto.randomBytes(128).toString('base64');
+
+export const comparePassword = (password: string, hash: string): boolean => bcrypt.compareSync(password, hash);
+
+export const errResponse = (res: any, code: number, status: string, message: string) => res.status(code).json({ status, message }).end();
