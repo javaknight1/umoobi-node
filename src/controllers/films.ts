@@ -28,24 +28,24 @@ export const getAllFilms = async (req: express.Request, res: express.Response) =
 
 export const newFilm = async (req: express.Request, res: express.Response) => {
     try {
-        const { title, description, rent, purchase, cover, trailer } = req.body;
+        const { title, description, rent, purchase, cover, video } = req.body;
         const owner = req.body.user.id;
 
         if (!title || !description || (!rent && !purchase)) {
             return errResponse(res, 400, "MISSING_FIELDS", "Missing required fields.");
         }
 
-        const film = await createFilm({
+        await createFilm({
             title,
             description,
             rent,
             owner,
             purchase,
             cover,
-            trailer
+            video
         });
 
-        return res.status(200).json(film).end();
+        return res.status(200).json("Successfully created film!").end();
     } catch (error) {
         console.log(error);
         return errResponse(res, 400, "CODE_ERROR", "Found message in code.");
@@ -55,27 +55,25 @@ export const newFilm = async (req: express.Request, res: express.Response) => {
 export const updateFilm = async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
-        const { title, description, rent, purchase, cover, trailer } = req.body;
         const owner = req.body.user.id;
 
-        if (!id || !title || !description || (!rent && !purchase)) {
-            return errResponse(res, 400, "MISSING_FIELDS", "Missing required fields.");
+        if (!id) {
+            return errResponse(res, 400, "MISSING_FIELDS", "ID field is missing.");
         }
 
-        if (owner !== id) {
+        const film = await getFilmById(id);
+
+        if (!film) {
+            return errResponse(res, 400, "FILM_NOT_FOUND", "Film does not exist.");
+        }
+
+        if (owner !== film.owner.toString()) {
             return errResponse(res, 403, "NOT_OWNER", "User is not the owner.");
         }
 
-        const film = await updateFilmById(id, {
-            title,
-            description,
-            rent,
-            purchase,
-            cover,
-            trailer
-        });
+        await updateFilmById(id, req.body);
 
-        return res.status(200).json(film).end();
+        return res.status(200).json("Successfully updated film!").end();
     } catch (error) {
         console.log(error);
         return errResponse(res, 400, "CODE_ERROR", "Found message in code.");
@@ -91,13 +89,19 @@ export const deleteFilm = async (req: express.Request, res: express.Response) =>
             return errResponse(res, 400, "MISSING_FIELDS", "ID field is missing.");
         }
 
-        if (owner !== id) {
+        const film = await getFilmById(id);
+
+        if (!film) {
+            return errResponse(res, 400, "FILM_NOT_FOUND", "Film does not exist.");
+        }
+
+        if (owner !== film.owner.toString()) {
             return errResponse(res, 403, "NOT_OWNER", "User is not the owner.");
         }
 
-        const film = await deleteFilmById(id);
+        await deleteFilmById(id);
 
-        return res.status(200).json(film).end();
+        return res.status(200).json("Successfully deleted film!").end();
     } catch (error) {
         console.log(error);
         return errResponse(res, 400, "CODE_ERROR", "Found message in code.");

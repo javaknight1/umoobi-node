@@ -1,15 +1,14 @@
 import mongoose from 'mongoose';
 
 const FilmSchema = new mongoose.Schema({
-    _id: { type: String, required: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
-    rent: { type: Number, required: false, select: false },
+    rent: { type: Number, required: false },
     purchase: { type: Number, required: false },
-    owner: { type: mongoose.Types.ObjectId, required: false },
-    cover: { type: String, required: true, select: false },
-    trailer: { type: String, required: true, select: false },
-    film: { type: String, required: true, select: false },
+    owner: { type: mongoose.Types.ObjectId, required: true },
+    cover: { type: String, required: true },
+    trailer: { type: String, required: false },
+    video: { type: String, required: true },
 });
 
 export const FilmModel = mongoose.model('Film', FilmSchema);
