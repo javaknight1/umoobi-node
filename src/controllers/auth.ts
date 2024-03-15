@@ -23,8 +23,9 @@ export const login = async (req: express.Request, res: express.Response) => {
         }
 
         res.cookie("access_token", jwt.sign({id: user._id}, process.env.JWT), { httpOnly: true });
+        const { password: _, ...userWithoutPassword } = user.toObject();
 
-        return res.status(200).json("Successfully logged in!").end();
+        return res.status(200).json(userWithoutPassword).end();
     } catch (error) {
         console.log(error);
         return errResponse(res, 400, "CODE_ERROR", "Found message in code.");
@@ -45,13 +46,16 @@ export const register = async (req: express.Request, res: express.Response) => {
             return errResponse(res, 400, "USER_EXISTS", "User with email " + email + " already exists.");
         }
 
-        await createUser({
+        const user = await createUser({
             email,
             username,
             password: saltPassword(password),
         });
 
-        return res.status(200).json("Successfully registered!").end();
+        res.cookie("access_token", jwt.sign({id: user._id}, process.env.JWT), { httpOnly: true });
+        const { password: _, ...userWithoutPassword } = user;
+
+        return res.status(200).json(userWithoutPassword).end();
     } catch (error) {
         console.log(error);
         return errResponse(res, 400, "CODE_ERROR", "Found message in code.");
