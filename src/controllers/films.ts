@@ -16,7 +16,13 @@ export const getAllFilms = async (req: express.Request, res: express.Response) =
 
             return res.status(200).json(film).end();
         } else {
+            const { owner } = req.query;
             const films = await getFilms();
+
+            if (owner) {
+                const filteredFilms = films.filter((film) => film.owner.toString() === owner);
+                return res.status(200).json(filteredFilms).end();
+            }
 
             return res.status(200).json(films).end();
         }
