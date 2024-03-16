@@ -22,10 +22,11 @@ export const login = async (req: express.Request, res: express.Response) => {
             return errResponse(res, 403, "INCORRECT_PASSWORD", "The given password is incorrect.");
         }
 
-        res.cookie("access_token", jwt.sign({id: user._id}, process.env.JWT), { httpOnly: true });
+        const token = jwt.sign({id: user._id}, process.env.JWT);
         const { password: _, ...userWithoutPassword } = user.toObject();
 
-        return res.status(200).json(userWithoutPassword).end();
+        res.cookie("access_token", token, { httpOnly: true })
+                    .status(200).json(userWithoutPassword).end();
     } catch (error) {
         console.log(error);
         return errResponse(res, 400, "CODE_ERROR", "Found message in code.");
@@ -52,10 +53,11 @@ export const register = async (req: express.Request, res: express.Response) => {
             password: saltPassword(password),
         });
 
-        res.cookie("access_token", jwt.sign({id: user._id}, process.env.JWT), { httpOnly: true });
+        const token = jwt.sign({id: user._id}, process.env.JWT);
         const { password: _, ...userWithoutPassword } = user;
 
-        return res.status(200).json(userWithoutPassword).end();
+        res.cookie("access_token", token, { httpOnly: true })
+                    .status(200).json(userWithoutPassword).end();
     } catch (error) {
         console.log(error);
         return errResponse(res, 400, "CODE_ERROR", "Found message in code.");
