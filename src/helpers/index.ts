@@ -1,7 +1,5 @@
 import bcrypt from "bcryptjs";
 
-const SECRET = 'RAVERY90-REST-API';
-
 export const saltPassword = (password: string): string => {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 }

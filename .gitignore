@@ -1,2 +1,9 @@
 node_modules
 dist
+src/uploads
+.npm
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
