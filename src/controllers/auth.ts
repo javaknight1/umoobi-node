@@ -9,7 +9,7 @@ export const login = async (req: express.Request, res: express.Response) => {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return errResponse(res, 400, "MISSING_FIELDS", "You are missing either username or email.");
+            return errResponse(res, 400, "MISSING_FIELDS", "You are missing either email or password.");
         }
 
         const user = await getUserByEmail(email).select("+password");
